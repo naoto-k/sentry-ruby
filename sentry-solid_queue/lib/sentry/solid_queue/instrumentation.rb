@@ -8,6 +8,7 @@ module Sentry
       def self.included(base)
         base.around_enqueue do |job, block|
           next block.call unless Sentry.initialized?
+          next block.call unless job.class.queue_adapter_name == "solid_queue"
 
           # around_enqueue (Client-side) logic
           sentry_context = {
